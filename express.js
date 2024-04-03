@@ -3,36 +3,24 @@
 import express from 'express';
 //Importa Módulo BodyParser que analiza el cuerpo de las solicitudes HTTP.
 import bodyParser from 'body-parser';
-//Importa la función createRequire del módulo module de Node.js
-import {createRequire} from 'node:module';
-//Importa un esquema de validación para las canciones.
-import {songSchema} from './validator/song.schema.js';
-
-
-//DEFINICIÓN DE CONSTANTES Y FUNCIONES
-//Crea una instancia de require utilizando la función createRequire para poder importar archivos JSON.
-const require = createRequire(import.meta.url);
-//Define una función llamada readJSON que utiliza la instancia de require para leer archivos JSON.
-export const readJSON = (path) => require(path);
-
+import { songRouter } from './view/song.route.js';
 //Instancia de la aplicación Express
 const app = express();
 //Puerto en el que se ejecutará la aplicación
 const port = 3000;
-
-const songs = readJSON('./songs.json');
 
 //MIDDLEWARES
 //Utiliza el middleware bodyParser.urlencoded para analizar los cuerpos de las solicitudes codificadas en URL.
 app.use(bodyParser.urlencoded({extended: false}));
 //Utiliza el middleware bodyParser.json para analizar los cuerpos de las solicitudes JSON.
 app.use(bodyParser.json());
-
+app.use(songRouter);
 //MANEJO DE RUTAS
+/*
 app.get('/', (req, res) =>{
     res.status(200).send('<h1>¡Hola Mundo!</h1>');
 })
-//Json de todas las canciones
+
 app.get('/song', (req, res) => {
     const {genre} = req.query;
     if(genre){
@@ -68,7 +56,7 @@ app.put('/song/:id', (req, res) => {
     if(songById){
         const index = songs.indexOf(songById);
         const updatedSong = req.body;
-        const {error} = songSchema.validate(updatedSong);
+        const {error} = songUpdateSchema.validate(updatedSong);
         if(error.error){
             res.status(400).send(error.details[0].message);
         }
@@ -88,7 +76,7 @@ app.delete('/song/:id', (req, res) => {
     }else{
         res.status(404).send('Song not found');
     }
-})
+})*/
 //Escucha en el puerto 3000
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
